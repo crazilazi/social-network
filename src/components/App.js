@@ -34,8 +34,8 @@ class App extends Component {
     // Network ID
     const networkId = await web3.eth.net.getId()
     const networkData = SocialNetwork.networks[networkId]
-    if(networkData) {
-      const socialNetwork = web3.eth.Contract(SocialNetwork.abi, networkData.address)
+    if (networkData) {
+      const socialNetwork = new web3.eth.Contract(SocialNetwork.abi, networkData.address)
       this.setState({ socialNetwork })
       const postCount = await socialNetwork.methods.postCount().call()
       this.setState({ postCount })
@@ -48,9 +48,9 @@ class App extends Component {
       }
       // Sort posts. Show highest tipped posts first
       this.setState({
-        posts: this.state.posts.sort((a,b) => b.tipAmount - a.tipAmount )
+        posts: this.state.posts.sort((a, b) => b.tipAmount - a.tipAmount)
       })
-      this.setState({ loading: false})
+      this.setState({ loading: false })
     } else {
       window.alert('SocialNetwork contract not deployed to detected network.')
     }
@@ -59,17 +59,17 @@ class App extends Component {
   createPost(content) {
     this.setState({ loading: true })
     this.state.socialNetwork.methods.createPost(content).send({ from: this.state.account })
-    .once('receipt', (receipt) => {
-      this.setState({ loading: false })
-    })
+      .once('receipt', (receipt) => {
+        this.setState({ loading: false })
+      })
   }
 
   tipPost(id, tipAmount) {
     this.setState({ loading: true })
     this.state.socialNetwork.methods.tipPost(id).send({ from: this.state.account, value: tipAmount })
-    .once('receipt', (receipt) => {
-      this.setState({ loading: false })
-    })
+      .once('receipt', (receipt) => {
+        this.setState({ loading: false })
+      })
   }
 
   constructor(props) {
@@ -90,13 +90,13 @@ class App extends Component {
     return (
       <div>
         <Navbar account={this.state.account} />
-        { this.state.loading
+        {this.state.loading
           ? <div id="loader" className="text-center mt-5"><p>Loading...</p></div>
           : <Main
-              posts={this.state.posts}
-              createPost={this.createPost}
-              tipPost={this.tipPost}
-            />
+            posts={this.state.posts}
+            createPost={this.createPost}
+            tipPost={this.tipPost}
+          />
         }
       </div>
     );
